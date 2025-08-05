@@ -1,19 +1,24 @@
 import requests
 
-SERVER_URL = "https://xyz-u6do.onrender.com"  # replace this with your deployed server URL
+SERVER_URL = "https://xyz-u6do.onrender.com"  # Replace with your real URL
 
 def main():
-    print("🛰️ Python Client\n")
-    name = input("Enter your name: ")
+    print("🛰️ Private Messaging Client\n")
+    sender = input("Your name: ")
+    recipient = input("Send messages to: ")
 
-    print("\nStart typing messages. Press Ctrl+C to quit.\n")
+    print(f"\nStart chatting with {recipient}. Press Ctrl+C to quit.\n")
     while True:
         try:
             message = input("> ")
-            data = {"name": name, "message": message}
+            data = {
+                "from": sender,
+                "to": recipient,
+                "message": message
+            }
             response = requests.post(f"{SERVER_URL}/api/send", json=data)
             if response.status_code != 200:
-                print("❌ Error sending message:", response.json())
+                print("❌ Error:", response.json())
         except KeyboardInterrupt:
             print("\n👋 Goodbye!")
             break

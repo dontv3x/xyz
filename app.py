@@ -1,26 +1,29 @@
 from flask import Flask, request, render_template
+from collections import defaultdict
 import os
 
 app = Flask(__name__)
 
-# Store message temporarily
-messages = []
+# recipient_messages: { recipient_name: [ (sender, message), ... ] }
+recipient_messages = defaultdict(list)
 
 @app.route('/')
 def home():
-    return render_template('index.html', messages=messages)
+    return render_template('index.html', recipient_messages=recipient_messages)
 
 @app.route('/api/send', methods=['POST'])
-def receive_data():
+def send_message():
     data = request.json
-    messages.append(data.get("message", "No message"))
-    return {"status": "success"}
+    sender = data.get("from")
+    recipient = data.get("to")
+    message = data.get("message")
 
-@app.route('/api/from-website', methods=['POST'])
-def from_website():
-    message = request.form.get("info")
-    messages.append(message)
-    return render_template('index.html', messages=messages)
+    if sender and recipient and message:
+        recipient_messages[recipient].append((sender, message))
+        return {"status": "success"}
+    return {"status": "error", "detail": "Missing from/to/message"}, 400
+
+
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))

@@ -1,20 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Message Board</title>
+  <title>Private Messages</title>
 </head>
 <body>
-  <h1>Messages</h1>
-  <ul>
-    {% for message in messages %}
-      <li>{{ message }}</li>
-    {% endfor %}
-  </ul>
-
-  <h2>Send Message from Website</h2>
-  <form action="/api/from-website" method="POST">
-    <input type="text" name="info" placeholder="Type something">
-    <button type="submit">Send</button>
-  </form>
+  <h1>Messages Received</h1>
+  {% for recipient, messages in recipient_messages.items() %}
+    <h2>To: {{ recipient }}</h2>
+    <ul>
+      {% for sender, msg in messages %}
+        <li><strong>{{ sender }}:</strong> {{ msg }}</li>
+      {% endfor %}
+    </ul>
+  {% endfor %}
 </body>
 </html>
